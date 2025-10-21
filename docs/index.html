@@ -2,29 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Stopwatch</title>
+  <title>Minimal Stopwatch with Dark Mode</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #232425;
+      --secondary: #ededed;
+      --accent: #343638;
+      --card-bg: rgba(245,245,248,0.84);
+      --shadow: 0 8px 48px 0 #13172018, 0 2px 12px 0 #fff6;
+      --border: 2px solid #ececec;
+      --lap-sep: #e3e4eb;
+      --grey-btn: rgba(238,238,241,0.75);
+      --backdrop-blur: blur(12px);
+      --dark-primary: #ededed;
+      --dark-secondary: #232425;
+      --dark-accent: #ededed;
+      --dark-card-bg: #232124ea;
+      --dark-shadow: 0 8px 48px 0 #23212455, 0 2px 12px 0 #212428fa;
+      --dark-border: 2px solid #232124;
+      --dark-lap-sep: #35353b;
+      --dark-grey-btn: #232124ee;
+      --dark-backdrop-blur: blur(0px);
+    }
     html, body {
       background: linear-gradient(135deg, #e5e8ea 0%, #f7f9fa 75%);
       min-height: 100vh;
       margin: 0;
       font-family: 'Share Tech Mono', 'Consolas', monospace;
-      color: #232425;
+      color: var(--primary);
+      transition: background .27s;
     }
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      transition: color .27s;
     }
     #container {
       position: relative;
       margin: 0 auto;
-      background: rgba(245, 245, 248, 0.84);
+      background: var(--card-bg);
       border-radius: 23px;
-      box-shadow: 0 8px 48px 0 #13172018, 0 2px 12px 0 #fff6;
+      box-shadow: var(--shadow);
       padding: 38px 34px 22px 34px;
       min-width: 265px;
       width: 94vw;
@@ -32,9 +54,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      backdrop-filter: blur(12px);
-      border: 2px solid #ececec;
-      transition: box-shadow .2s;
+      backdrop-filter: var(--backdrop-blur);
+      border: var(--border);
+      transition: background .3s, box-shadow .3s, border .3s, backdrop-filter .3s;
       z-index: 100;
     }
     h1 {
@@ -42,17 +64,18 @@
       font-weight: 400;
       font-size: 1.03em;
       letter-spacing: .14em;
-      color: #343638;
-      opacity: 0.63;
+      color: var(--accent);
+      opacity: 0.7;
       margin-bottom: 23px;
       margin-top: 18px;
       text-align: center;
+      transition: color .3s;
       text-shadow: 0 2px 12px #e5e8eaaa;
     }
     #digital {
       font-family: 'Share Tech Mono', 'Consolas', monospace;
       font-size: 2.5em;
-      color: #232425;
+      color: var(--primary);
       background: transparent;
       letter-spacing: 0.09em;
       border-radius: 15px;
@@ -64,6 +87,7 @@
       user-select: all;
       text-shadow: 0 2px 8px #e9ecee66, 0 0.5px 0px #fff;
       border: none;
+      transition: color .3s, background .3s;
     }
     #btns {
       display: flex;
@@ -74,8 +98,8 @@
       width: 100%;
     }
     button {
-      background: rgba(238, 238, 241, 0.75);
-      color: #232425;
+      background: var(--grey-btn);
+      color: var(--primary);
       font-family: inherit;
       border: 1.5px solid #cbcbcf;
       border-radius: 11px;
@@ -96,6 +120,27 @@
       border: 1.5px solid #767680;
       box-shadow: 0 2px 8px #cfcfd266;
     }
+    #darkmode-toggle {
+      position: absolute;
+      top: 16px;
+      right: 22px;
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 1.15em;
+      padding: 10px 0 5px 0;
+      margin-right: 1px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: none;
+      transition: color .3s, background .3s;
+      opacity: 0.7;
+    }
+    #darkmode-toggle:hover {
+      opacity: 1;
+      background: #f0f0f099;
+      color: #232425;
+    }
     #laps {
       list-style: none;
       width: 100%;
@@ -108,7 +153,7 @@
     }
     #laps li {
       font-family: inherit;
-      color: #232425;
+      color: var(--primary);
       background: none;
       border-radius: 10px;
       margin-bottom: 3px;
@@ -117,21 +162,17 @@
       align-items: center;
       justify-content: space-between;
       padding: 4px 2px;
-      border-bottom: 1px solid #e3e4eb;
+      border-bottom: 1px solid var(--lap-sep);
       opacity: 0.75;
+      transition: color .3s, border-bottom .3s;
     }
     #laps li span {
       color: #8b8d93;
-      opacity: 0.65;
+      opacity: 0.67;
       font-size: 0.91em;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       margin-right: 8px;
-    }
-    @media (max-width:500px) {
-      #container {padding: 11px 2vw 8px 2vw;}
-      #digital {font-size: 1.38em;}
-      h1 {font-size: 0.97em;}
-      button {font-size: .94em;}
+      transition: color .3s;
     }
     /* Floating effect for the box */
     #container::after {
@@ -145,11 +186,46 @@
       z-index: -1;
       opacity: 0.88;
     }
+    /* DARK MODE STYLES */
+    .darkmode,
+    .darkmode body {
+      background: linear-gradient(135deg, #232124 0%, #131315 75%) !important;
+      color: var(--dark-primary) !important;
+    }
+    .darkmode #container {
+      background: var(--dark-card-bg) !important;
+      color: var(--dark-primary) !important;
+      box-shadow: var(--dark-shadow) !important;
+      border: var(--dark-border) !important;
+      backdrop-filter: var(--dark-backdrop-blur) !important;
+    }
+    .darkmode h1, .darkmode #digital {
+      color: var(--dark-accent) !important;
+      text-shadow: 0 2px 8px #23212460, 0 0.5px 0px #232124e0 !important;
+    }
+    .darkmode button {
+      background: var(--dark-grey-btn) !important;
+      color: var(--dark-primary) !important;
+      border: 1.5px solid #35353b !important;
+      box-shadow: 0 2px 8px #13131533 !important;
+    }
+    .darkmode #laps li {
+      color: var(--dark-primary) !important;
+      border-bottom: 1px solid var(--dark-lap-sep) !important;
+    }
+    .darkmode #laps li span {
+      color: #cccfd2 !important;
+    }
+    .darkmode #darkmode-toggle {
+      background: none !important;
+      color: var(--dark-accent) !important;
+    }
   </style>
 </head>
 <body>
-  <h1>STOPWATCH</h1>
+  <h1>MINIMAL STOPWATCH</h1>
   <div id="container">
+    <button id="darkmode-toggle" title="Toggle dark mode">&#x1F319;</button>
     <div id="digital">00:00:00.00</div>
     <div id="btns">
       <button id="start">START</button>
@@ -161,7 +237,6 @@
   </div>
   <script>
     let startTime = 0, elapsedTime = 0, timerInterval, isRunning = false, lapCount = 0;
-
     function formatTime(ms) {
       let dt = new Date(ms);
       let hr = dt.getUTCHours().toString().padStart(2, '0');
@@ -170,11 +245,9 @@
       let centi = Math.floor(dt.getUTCMilliseconds() / 10).toString().padStart(2, '0');
       return `${hr}:${min}:${sec}.${centi}`;
     }
-
     function updateDisplay() {
       document.getElementById('digital').textContent = formatTime(elapsedTime);
     }
-
     document.getElementById('start').onclick = function() {
       if (!isRunning) {
         startTime = Date.now() - elapsedTime;
@@ -185,14 +258,12 @@
         isRunning = true;
       }
     };
-
     document.getElementById('pause').onclick = function() {
       if (isRunning) {
         clearInterval(timerInterval);
         isRunning = false;
       }
     };
-
     document.getElementById('reset').onclick = function() {
       clearInterval(timerInterval);
       elapsedTime = 0;
@@ -201,7 +272,6 @@
       updateDisplay();
       document.getElementById('laps').innerHTML = '';
     };
-
     document.getElementById('lap').onclick = function() {
       if (isRunning) {
         lapCount++;
@@ -212,8 +282,17 @@
         document.getElementById('laps').scrollTop = document.getElementById('laps').scrollHeight;
       }
     };
-
     updateDisplay();
+
+    // DARK MODE TOGGLE
+    const toggleBtn = document.getElementById('darkmode-toggle');
+    toggleBtn.onclick = function() {
+      if (!document.documentElement.classList.contains('darkmode')) {
+        document.documentElement.classList.add('darkmode');
+      } else {
+        document.documentElement.classList.remove('darkmode');
+      }
+    };
   </script>
 </body>
 </html>
