@@ -4,15 +4,14 @@
   <meta charset="UTF-8">
   <title>Stopwatch</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <!-- Try a seven segment Google Font or fallback to monospace -->
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     html, body {
-      background: #0b0b0b;
-      color: #ededed;
-      margin: 0;
+      background: linear-gradient(135deg, #e5e8ea 0%, #f7f9fa 75%);
       min-height: 100vh;
+      margin: 0;
       font-family: 'Share Tech Mono', 'Consolas', monospace;
+      color: #232425;
     }
     body {
       display: flex;
@@ -21,73 +20,81 @@
       justify-content: center;
     }
     #container {
+      position: relative;
       margin: 0 auto;
-      border-radius: 22px;
-      background: rgba(255,255,255,0.01);
-      box-shadow: 0 4px 48px #2224, 0 0.5px 2px #fff1;
-      padding: 38px 28px 22px 28px;
-      min-width: 260px;
+      background: rgba(245, 245, 248, 0.84);
+      border-radius: 23px;
+      box-shadow: 0 8px 48px 0 #13172018, 0 2px 12px 0 #fff6;
+      padding: 38px 34px 22px 34px;
+      min-width: 265px;
       width: 94vw;
       max-width: 370px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      backdrop-filter: blur(12px);
+      border: 2px solid #ececec;
+      transition: box-shadow .2s;
+      z-index: 100;
     }
     h1 {
       font-family: inherit;
       font-weight: 400;
-      font-size: 1.0em;
-      letter-spacing: .2em;
-      color: #ededed;
-      opacity: 0.7;
-      margin-bottom: 26px;
-      margin-top: 24px;
+      font-size: 1.03em;
+      letter-spacing: .14em;
+      color: #343638;
+      opacity: 0.63;
+      margin-bottom: 23px;
+      margin-top: 18px;
       text-align: center;
+      text-shadow: 0 2px 12px #e5e8eaaa;
     }
     #digital {
       font-family: 'Share Tech Mono', 'Consolas', monospace;
-      font-size: 2.7em;
-      color: #fff;
+      font-size: 2.5em;
+      color: #232425;
       background: transparent;
       letter-spacing: 0.09em;
-      text-shadow: 0 0 0.6px #fff8, 0 2px 13px #8881, 0 0.5px 0 #fff;
-      border-radius: 18px;
-      word-spacing: 0.23em;
-      margin-bottom: 32px;
-      padding: 7px 2px 9px 2px;
+      border-radius: 15px;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 29px;
+      padding: 8px 3px 11px 3px;
       min-width: 260px;
       text-align: center;
       user-select: all;
+      text-shadow: 0 2px 8px #e9ecee66, 0 0.5px 0px #fff;
+      border: none;
     }
     #btns {
       display: flex;
       gap: 13px;
-      margin-bottom: 13px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
       justify-content: center;
       width: 100%;
     }
     button {
-      background: rgba(255,255,255,0.03);
-      color: #fff;
+      background: rgba(238, 238, 241, 0.75);
+      color: #232425;
       font-family: inherit;
-      border: 1.5px solid #aaa6;
-      border-radius: 12px;
+      border: 1.5px solid #cbcbcf;
+      border-radius: 11px;
       outline: none;
-      box-shadow: none;
       font-size: 1em;
       padding: 10px 22px;
       font-weight: 400;
       cursor: pointer;
-      transition: background .13s, color .13s, border .13s;
+      transition: background .13s, color .13s, border .13s, box-shadow .18s;
       letter-spacing: 1px;
       margin-bottom: 3px;
       margin-top: 3px;
+      box-shadow: 0 2px 6px #e9ecee19;
     }
     button:hover, button:focus {
       background: #fff;
-      color: #131313;
-      border: 1.5px solid #fff;
+      color: #232425;
+      border: 1.5px solid #767680;
+      box-shadow: 0 2px 8px #cfcfd266;
     }
     #laps {
       list-style: none;
@@ -101,7 +108,7 @@
     }
     #laps li {
       font-family: inherit;
-      color: #ededed;
+      color: #232425;
       background: none;
       border-radius: 10px;
       margin-bottom: 3px;
@@ -110,21 +117,33 @@
       align-items: center;
       justify-content: space-between;
       padding: 4px 2px;
-      border-bottom: 1px solid #2226;
-      opacity: 0.82;
+      border-bottom: 1px solid #e3e4eb;
+      opacity: 0.75;
     }
     #laps li span {
-      color: #fff;
-      opacity: 0.58;
-      font-size: 0.92em;
-      letter-spacing: 0.1em;
-      margin-right: 10px;
+      color: #8b8d93;
+      opacity: 0.65;
+      font-size: 0.91em;
+      letter-spacing: 0.06em;
+      margin-right: 8px;
     }
     @media (max-width:500px) {
-      #container {padding: 12px 2vw 9px 2vw;}
-      #digital {font-size: 1.36em;}
+      #container {padding: 11px 2vw 8px 2vw;}
+      #digital {font-size: 1.38em;}
       h1 {font-size: 0.97em;}
-      button {font-size: .93em;}
+      button {font-size: .94em;}
+    }
+    /* Floating effect for the box */
+    #container::after {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      left: 18px; top: 16px;
+      right: 18px; bottom: 18px;
+      border-radius: 23px;
+      box-shadow: 0 16px 46px 0 #ececee38;
+      z-index: -1;
+      opacity: 0.88;
     }
   </style>
 </head>
